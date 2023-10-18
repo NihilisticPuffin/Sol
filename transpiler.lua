@@ -5,7 +5,7 @@ return {
 
     indent = function(self)
         local tabs = ''
-        for i=0, self.depth-1 do
+        for i=1, self.depth do
             tabs = tabs .. '    '
         end
         return tabs
@@ -69,9 +69,11 @@ return {
     end,
     visitAnonFunctionDeclaration = function(self, fn)
         local fn_out = ''
+        self.depth = self.depth + 1
         for _, node in ipairs(fn.body) do
-            fn_out = fn_out .. self:visit(node) .. '\n'
+            fn_out = fn_out .. self:indent() .. self:visit(node) .. '\n'
         end
+        self.depth = self.depth - 1
         local fn_args = ''
         if (fn.args) then
             for k, node in ipairs(fn.args) do
