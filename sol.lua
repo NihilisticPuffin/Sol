@@ -17,7 +17,13 @@
     [ ] Lua Table Support
     [ ] String Indexing: "Hello"[2] //-> 'e'
     [ ] Default Parameters: fn example(arg = 5) { }
-    
+
+    ===== Possible Features =====
+    [ ] Const
+    [ ] Enum
+    [ ] Switch Statements
+    [ ] Ternary Operator
+
     ===== Possible Cursed? Features =====
     [ ] Arithmetic String Operations
         Substring: 1-"Hello, World!"-8 //-> "ello"
