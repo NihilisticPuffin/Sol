@@ -18,6 +18,7 @@
         [ ] ElseStatement: body
 
         [*] WhileStatement: expr, body
+        [ ] ForStatement: init, limit, step, body
 
         [*] ReturnStatement: value
 

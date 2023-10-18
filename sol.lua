@@ -14,6 +14,9 @@
 
     ===== Planned Features =====
     [*] String Interpolation ("Hello, my name is ${name} and I am ${age} years old")
+    [ ] Lua Table Support
+    [ ] String Indexing: "Hello"[2] //-> 'e'
+    [ ] Default Parameters: fn example(arg = 5) { }
     
     ===== Possible Cursed? Features =====
     [ ] Arithmetic String Operations
@@ -21,9 +24,9 @@
         Concatenation: "Hello,"+" World!" //-> "Hello, World!"
         Repetition: "Hi"*4 //-> "HiHiHiHi"
         Spliting:
-                    "Hello, World!" / ',' //-> {"Hello", "World!"}
-                    "Hello, World!" / 4 //-> {"Hell", "o, W", "orld"}
-                    "Hello, World!" % 4 //-> '!'
+                "Hello, World!" / ',' //-> {"Hello", "World!"}
+                "Hello, World!" / 4 //-> {"Hell", "o, W", "orld"}
+                "Hello, World!" % 4 //-> '!'
 --]]
 local args = {...}
 options = {
