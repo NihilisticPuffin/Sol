@@ -65,9 +65,9 @@ if options.log and not fs.exists(log_path) then
     fs.makeDir(log_path)
 end
 
-local Lexer = dofile('./tokenizer.lua')
-local Parser = dofile('./parser.lua')
-local Compiler = dofile('./transpiler.lua')
+local Lexer = dofile('./.sol/tokenizer.lua')
+local Parser = dofile('./.sol/parser.lua')
+local Compiler = dofile('./.sol/transpiler.lua')
 
 local tokens = Lexer:lex(data)
 if options.log then
