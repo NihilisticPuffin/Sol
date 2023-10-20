@@ -12,6 +12,7 @@
         [ ] ClassDeclaration: name, parent, body
 
         [*] FunctionCall: name, args
+        [ ] MemberExpression: name, expr
 
         [-] IfStatement: expr, body
         [ ] ElseIfStatement: expr, body

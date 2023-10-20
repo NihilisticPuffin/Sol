@@ -1,3 +1,17 @@
+# TODO LIST
+- [ ] Better Error Handling / Messages
+- [ ] More Compiler Features (compile whole directory)
+- [ ] Ask Before File Override
+    
+## Compiler Components
+- [x] Tokenizer
+- [x] Sol Parser
+    - [x] Parser Rewrite
+- [x] Lua Transpiler
+    - [ ] Transpiler Rewrite
+    - [x] Indent Output Code
+- [ ] sol.lua Rewrite
+
 # Planned Features
 - [x] String Interpolation ("Hello, my name is ${name} and I am ${age} years old")
 - [ ] Lua Table Support
