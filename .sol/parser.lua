@@ -156,11 +156,28 @@ return {
         if (self:match(TokenTypes.KEYWORD, 'fn')) then
             self:consume()
             self:try_consume(TokenTypes.SEPARATOR, '(')
-            local args = self:VarList()
+            local args, defs = self:VarList()
             self:try_consume(TokenTypes.SEPARATOR, ')')
             self:try_consume(TokenTypes.SEPARATOR, '{')
             local body = self:StatementList()
             self:try_consume(TokenTypes.SEPARATOR, '}')
+            for k, v in pairs(defs) do
+                if v ~= 'none' then
+                    table.insert(body, 1, {
+                        type = 'VariableDeclaration',
+                        name = args[k].value,
+                        value = {
+                            type = 'BinaryExpression',
+                            op = '||',
+                            left = {
+                                type = 'Literal',
+                                value = args[k].value
+                            },
+                            right = v
+                        }
+                    })
+                end
+            end
             return {
                 ['type'] = 'AnonFunctionDeclaration',
                 ['args'] = args,
@@ -205,16 +222,29 @@ return {
 
     VarList = function(self)
         local vars = {}
+        local defaults = {}
         if (not self:match(TokenTypes.IDENTIFIER)) then
             return nil
         end
         table.insert(vars, self:try_consume(TokenTypes.IDENTIFIER))
+        if self:match(TokenTypes.OPERATOR, '=') then
+            self:consume()
+            table.insert(defaults, self:Expression())
+        else
+            table.insert(defaults, 'none')
+        end
         while (self:match(TokenTypes.SEPARATOR, ',')) do
             self:consume()
             table.insert(vars, self:try_consume(TokenTypes.IDENTIFIER))
+            if self:match(TokenTypes.OPERATOR, '=') then
+                self:consume()
+                table.insert(defaults, self:Expression())
+            else
+                table.insert(defaults, 'none')
+            end
         end
 
-        return vars
+        return vars, defaults
     end,
 
     ExprList = function(self)
@@ -289,11 +319,28 @@ return {
         self:consume()
         local ident = self:try_consume(TokenTypes.IDENTIFIER).value
         self:try_consume(TokenTypes.SEPARATOR, '(')
-        local args = self:VarList()
+        local args, defs = self:VarList()
         self:try_consume(TokenTypes.SEPARATOR, ')')
         self:try_consume(TokenTypes.SEPARATOR, '{')
         local body = self:StatementList()
         self:try_consume(TokenTypes.SEPARATOR, '}')
+        for k, v in pairs(defs) do
+            if v ~= 'none' then
+                table.insert(body, 1, {
+                    type = 'VariableDeclaration',
+                    name = args[k].value,
+                    value = {
+                        type = 'BinaryExpression',
+                        op = '||',
+                        left = {
+                            type = 'Literal',
+                            value = args[k].value
+                        },
+                        right = v
+                    }
+                })
+            end
+        end
         return {
             ['type'] = 'FunctionDeclaration',
             ['name'] = ident,
