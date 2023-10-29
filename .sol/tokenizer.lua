@@ -39,7 +39,7 @@ return {
             self.start = self.cursor
             local char = self:read()
 
-            if char == ';' or char == '(' or char == ')' or char == '{' or char == '}' or char == '[' or char == ']' or char == ',' or char == ':' or char == '.' then
+            if char == ';' or char == '(' or char == ')' or char == '{' or char == '}' or char == '[' or char == ']' or char == ',' or char == '.' then
                 self.cursor = self.cursor+1
                 self:addToken(TokenTypes.SEPARATOR, char)
             elseif char == '+' or char == '-' or char == '*' or char == '/' or char == '%' or char == '^' or char == '<' or char == '>' or char == '=' or char == '!' or char == '#' then
@@ -59,6 +59,9 @@ return {
                 if self:read() == char then
                     self.cursor = self.cursor+1
                 end
+                self:addToken(TokenTypes.OPERATOR, self.source:sub(self.start, self.cursor-1))
+            elseif char == '?' or char == ':' then
+                self.cursor = self.cursor+1
                 self:addToken(TokenTypes.OPERATOR, self.source:sub(self.start, self.cursor-1))
             elseif char == '"' or char == "'" then
                 self.cursor = self.cursor+1

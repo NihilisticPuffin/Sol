@@ -1,8 +1,8 @@
 # TODO LIST
 - [ ] Better Error Handling / Messages
 - [ ] More Compiler Features (compile whole directory)
-- [ ] Ask Before File Override
-    
+- [ ] Unicode Character Support
+
 ## Compiler Components
 - [x] Tokenizer
 - [x] Sol Parser
@@ -10,11 +10,16 @@
 - [x] Lua Transpiler
     - [ ] Transpiler Rewrite
     - [x] Indent Output Code
-- [ ] sol.lua Rewrite
+- [x] sol.lua Rewrite
+
+# Preprocessor
+- [ ] Define directive (#define \<name> \<value>)
 
 # Planned Features
 - [x] String Interpolation ("Hello, my name is ${name} and I am ${age} years old")
 - [ ] Lua Table Support
+    - [ ] Defining
+    - [x] Indexing
 - [ ] String Indexing: "Hello"[2] //-> 'e'
 - [ ] Default Parameters: fn example(arg = 5) { }
 
@@ -22,7 +27,7 @@
 - [ ] Const
 - [ ] Enum
 - [ ] Switch Statements
-- [ ] Ternary Operator
+- [x] Ternary Operator (?:)
 
 # Possible Cursed? Features
 - [ ] Arithmetic String Operations

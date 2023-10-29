@@ -1,0 +1,244 @@
+-- written by MKlegoman357
+
+local function argser (...)
+  local args = {...}
+
+  if type(args[1]) == "table" then
+    args = args[1]
+  end
+
+  local function tryConvert (val, typ)
+    if type(val) == typ then
+      return true, val
+    end
+
+    if typ == "boolean" then
+      return true, val:lower():sub(1, 1) == "t"
+    elseif typ == "number" then
+      local n = tonumber(val)
+
+      return not not n, n
+    elseif typ == "table" and type(val) == "string" then
+      local t = textutils.unserialize(val)
+
+      if type(t) == "table" then
+        return true, t
+      end
+    end
+
+    return false
+  end
+
+  return {
+    rawArgs = args;
+    args = {};
+
+    options = {};
+
+    lastName = nil;
+
+    num = function (self, i, name, valueType)
+      self.options[i] = {
+        type = "#";
+        name = name;
+
+        i = i;
+
+        valueType = valueType;
+      }
+
+      if name then
+        self.options[name] = self.options[i]
+      end
+
+      self.lastName = name or i;
+
+      return self
+    end;
+
+    switch = function (self, name, values, valueType)
+      self.options[name] = {
+        type = "-";
+        name = name;
+
+        hasValue = not not values;
+        count = type(values) == "number" and values or values and math.huge or 0;
+
+        valueType = valueType;
+      }
+
+      self.lastName = name;
+
+      return self
+    end;
+
+    named = function (self, name, hasValue, valueType)
+      self.options[name] = {
+        type = "--";
+        name = name;
+
+        hasValue = hasValue;
+
+        valueType = valueType;
+      }
+
+      self.lastName = name;
+
+      return self
+    end;
+
+    alias = function (self, name, alias)
+      if not alias then
+        name, alias = self.lastName, name
+      end
+
+      self.options[alias] = self.options[name]
+
+      return self
+    end;
+
+    func = function (self, name, func)
+      if not func then
+        name, func = self.lastName, name
+      end
+
+      local opt = self.options[name]
+
+      if not opt then
+        error("Argument '" .. name .. "' does not exist.", 2)
+      end
+
+      opt.func = func
+
+      return self
+    end;
+
+    default = function (self, name, default)
+      if default == nil then
+        name, default = self.lastName, name
+      end
+
+      local opt = self.options[name]
+
+      if opt and opt.func then
+        if opt.type == "-" then
+          for i, value in ipairs(default) do
+            default[i] = opt.func(value)
+          end
+        else
+          default = opt.func(default)
+        end
+      end
+
+      self.args[name] = default
+
+      if opt and opt.type == "#" then
+        self.args[type(name) == "number" and opt.name or opt.i] = default
+      end
+
+      return self
+    end;
+
+    parse = function (self)
+      local args = self.args
+      local options = self.options
+      local argn = 1
+      local switch = nil
+      local switchCount = 0
+
+      for i, arg in ipairs(self.rawArgs) do
+        if arg:sub(1, 1) == "-" then
+          switch = nil
+
+          if arg:sub(2, 2) == "-" then --named argument
+            local name, hasValue, value = arg:match("^%-%-([_a-zA-Z0-9]+)(=?)(.*)$")
+            local opt = options[name] and options[name].type == "--" and options[name]
+
+            if hasValue == "" or opt and not opt.hasValue then
+              value = true
+            elseif opt and opt.hasValue and opt.valueType then
+              local success, val = tryConvert(value, opt.valueType)
+
+              if not success then
+                error("Argument '" .. opt.name .. "' must be a valid " .. opt.valueType .. ".", 0)
+              end
+
+              value = val
+            end
+
+            if opt and opt.func then
+              value = opt.func(value)
+            end
+
+            args[opt and opt.name or name] = value
+          else -- switch
+            local name = arg:sub(2)
+            local opt = options[name] and options[name].type == "-" and options[name]
+            local value = opt and not opt.hasValue or not opt or {}
+
+            if not args[opt and opt.name or name] then
+              args[opt and opt.name or name] = value
+            end
+
+            if opt and opt.hasValue then
+              switch = opt
+              switchCount = opt.count
+            end
+          end
+        elseif switch then -- switch's argument
+          if switch.valueType then
+            local success, value = tryConvert(arg, switch.valueType)
+
+            if not success then
+              error("Argument '" .. switch.name .. "' must be a valid " .. switch.valueType .. ".", 0)
+            end
+
+            arg = value
+          end
+
+          local params = args[switch.name]
+
+          if switch.func then
+            arg = switch.func(arg)
+          end
+
+          params[#params + 1] = arg
+
+          switchCount = switchCount - 1
+
+          if switchCount <= 0 then
+            switch = nil
+          end
+        else -- numbered argument
+          local opt = options[argn] and options[argn].type == "#" and options[argn]
+
+          if opt and opt.valueType then
+            local success, value = tryConvert(arg, opt.valueType)
+
+            if not success then
+              error("Argument #" .. argn .. (opt.name and " (" .. opt.name .. ")" or "") .. " must be a valid " .. opt.valueType .. ".", 0)
+            end
+
+            arg = value
+          end
+
+          if opt and opt.func then
+            arg = opt.func(arg)
+          end
+
+          args[argn] = arg
+
+          argn = argn + 1
+
+          if opt and opt.name then
+            args[opt.name] = arg
+          end
+        end
+      end
+
+      return self
+    end;
+  }
+end
+
+return argser

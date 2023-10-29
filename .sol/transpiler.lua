@@ -1,6 +1,6 @@
 return {
     ast = {},
-    output = '',
+    output = '__ARGS = {...}\n',
     depth = 0,
 
     indent = function(self)
@@ -32,15 +32,28 @@ return {
     visitParenthesizedExpression = function(self, node)
         return '(' .. self:visit(node.value) .. ')'
     end,
+    visitIndexExpression = function(self, node)
+        return node.name .. '[' .. self:visit(node.value) .. ']'
+    end,
+
     visitUnaryExpression = function(self, node)
         return '-' .. self:visit(node.value)
     end,
-
     visitBinaryExpression = function(self, node)
         if node.op == '!=' then node.op = '~=' end
         if node.op == '&&' then node.op = 'and' end
         if node.op == '||' then node.op = 'or' end
+        if node.op == ':' then
+            return self:visitTernaryExpression(node)
+        end
+        if node.op == '?' then
+            return '(function() if ' .. self:visit(node.left) .. ' then return ' .. self:visit(node.right) .. ' end end)()'
+        end
         return self:visit(node.left) .. ' ' .. node.op .. ' ' .. self:visit(node.right)
+    end,
+    visitTernaryExpression = function(self, node)
+        if node.left.op ~= '?' then error('Invalid Ternary', 2) end
+        return '(function() if ' .. self:visit(node.left.left) .. ' then return ' .. self:visit(node.left.right) .. ' else return ' .. self:visit(node.right) .. ' end end)()'
     end,
 
     visitFunctionCall = function(self, fn)
@@ -140,6 +153,8 @@ return {
             return self:visitUnaryExpression(node)
         elseif node.type == 'ParenthesizedExpression' then
             return self:visitParenthesizedExpression(node)
+        elseif node.type == 'IndexExpression' then
+            return self:visitIndexExpression(node)
         else
             return '==Invalid Node=='
         end

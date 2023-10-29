@@ -34,21 +34,25 @@ return {
     tokens = {},
     cursor = 1,
     precedence = {
-        ['^'] = 7,
-        ['unary'] = 6,
-        ['%'] = 5,
-        ['/'] = 5,
-        ['*'] = 5,
-        ['-'] = 4,
-        ['+'] = 4,
-        ['<='] = 3,
-        ['>='] = 3,
-        ['<'] = 3,
-        ['>'] = 3,
-        ['!='] = 2,
-        ['=='] = 2,
-        ['&&'] = 1,
-        ['||'] = 1
+        ['^'] = 90,
+        ['unary'] = 80,
+        ['%'] = 70,
+        ['/'] = 70,
+        ['*'] = 70,
+        ['-'] = 60,
+        ['+'] = 60,
+        ['<='] = 50,
+        ['>='] = 50,
+        ['<'] = 50,
+        ['>'] = 50,
+        ['!='] = 40,
+        ['=='] = 40,
+        ['&'] = 30,
+        ['|'] = 20,
+        ['&&'] = 10,
+        ['||'] = 10,
+        ['?'] = 9,
+        [':'] = 8,
     },
     getPrecedence = function(self, token)
         if (token == "unary") then
@@ -100,6 +104,17 @@ return {
             ['value'] = expression
         }
     end,
+    IndexExpression = function(self)
+        local ident = self:consume().value
+        self:try_consume(TokenTypes.SEPARATOR, '[')
+        local expression = self:Expression()
+        self:try_consume(TokenTypes.SEPARATOR, ']')
+        return {
+            ['type'] = 'IndexExpression',
+            ['name'] = ident,
+            ['value'] = expression
+        }
+    end,
 
     Infix = function(self, left, operator)
         local token = self:try_consume(TokenTypes.OPERATOR, operator)
@@ -140,6 +155,9 @@ return {
         if (self:match(TokenTypes.IDENTIFIER)) then
             if (self:match(TokenTypes.SEPARATOR, '(', 1)) then
                 return self:FunctionCall()
+            end
+            if (self:match(TokenTypes.SEPARATOR, '[', 1)) then
+                return self:IndexExpression()
             end
 
             local name = self:consume().value
@@ -335,7 +353,7 @@ return {
             }
         elseif (self:match(TokenTypes.IDENTIFIER) and self:match(TokenTypes.SEPARATOR, '(', 1)) then
             return self:FunctionCall()
-        elseif (self:match(TokenTypes.IDENTIFIER)) then
+        elseif (self:match(TokenTypes.IDENTIFIER) and self:match(TokenTypes.OPERATOR, '=', 1)) then
             return self:VariableDeclaration()
         elseif (self:match(TokenTypes.SEPARATOR, '{')) then
             self:try_consume(TokenTypes.SEPARATOR, '{')

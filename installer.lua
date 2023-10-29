@@ -7,3 +7,4 @@ shell.run("wget", "https://raw.githubusercontent.com/NihilisticPuffin/Sol/main/s
 shell.run("wget", "https://raw.githubusercontent.com/NihilisticPuffin/Sol/main/.sol/tokenizer.lua", "./.sol/tokenizer.lua")
 shell.run("wget", "https://raw.githubusercontent.com/NihilisticPuffin/Sol/main/.sol/parser.lua", "./.sol/parser.lua")
 shell.run("wget", "https://raw.githubusercontent.com/NihilisticPuffin/Sol/main/.sol/transpiler.lua", "./.sol/transpiler.lua")
+shell.run("wget", "https://raw.githubusercontent.com/NihilisticPuffin/Sol/main/.sol/argser", "./.sol/argser")

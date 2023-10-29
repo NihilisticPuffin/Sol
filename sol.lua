@@ -1,58 +1,43 @@
-local args = {...}
-options = {
-    input = '',
-    log = false,
-}
-
-for i = 1, #args do
-    if (args[i] == '-i') then
-        i = i+1
-        if (args[i] == nil) then
-            error('TODO: Compiler Error No Input', 0)
-        end
-        options.input = args[i]
-    elseif (args[i] == '--log') then
-        options.log = true
-    end
-end
-
-if (options.input ~= '') then
-    h = fs.open(options.input, 'r')
-    data = h.readAll()
-    h.close()
-else
-    error('No Input File', 0)
-end
-
-log_path = './.logs'
-if options.log and not fs.exists(log_path) then
-    fs.makeDir(log_path)
-end
+local args = dofile("./.sol/argser")(...)
+  :num(1, 'input')
+  :switch('output', 1):alias('o'):default({'*.lua'})
+  :named('log')
+  :parse().args
 
 local Lexer = dofile('./.sol/tokenizer.lua')
 local Parser = dofile('./.sol/parser.lua')
 local Compiler = dofile('./.sol/transpiler.lua')
 
-local tokens = Lexer:lex(data)
-if options.log then
-    h = fs.open(log_path .. '/tokens.log', 'w')
-    for k, v in pairs(tokens) do
+if not args.input then
+    error('No Input (TODO: Better Errors)', 0)
+end
+
+file = args.input:match('(.*).sol$') or args.input
+args.output[#args.output] = args.output[#args.output]:gsub('*', file)
+
+function log(file, data)
+    local log_path = './.sol/.logs'
+    if not fs.exists(log_path) then
+        fs.makeDir(log_path)
+    end
+    local h = fs.open(log_path .. '/' .. file, 'w')
+    for k, v in pairs(data) do
         h.writeLine(textutils.serialize(v))
     end
     h.close()
 end
+
+local h = fs.open(args.input, 'r')
+local data = h.readAll()
+h.close()
+
+local tokens = Lexer:lex(data)
+if args.log then log('tokens.log', tokens) end
 
 local ast = Parser:parse(tokens)
-if options.log then
-    h = fs.open(log_path .. '/ast.log', 'w')
-    for k, v in pairs(ast) do
-        h.writeLine(textutils.serialize(v))
-    end
-    h.close()
-end
+if args.log then log('ast.log', ast) end
 
 local out = Compiler:compile(ast)
-file_path = options.input:gsub('.sol', '')
-h = fs.open(file_path .. '.lua', 'w')
+local h = fs.open(args.output[#args.output], 'w')
 h.write(out)
 h.close()
