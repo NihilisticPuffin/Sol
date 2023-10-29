@@ -33,7 +33,7 @@ return {
         return '(' .. self:visit(node.value) .. ')'
     end,
     visitTableExpression = function(self, node)
-        return node.name .. '{' .. node.value .. '}'
+        return '{' .. node.value .. '}'
     end,
     visitIndexExpression = function(self, node)
         return node.name .. '[' .. self:visit(node.value) .. ']'
