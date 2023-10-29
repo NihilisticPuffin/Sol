@@ -104,6 +104,19 @@ return {
             ['value'] = expression
         }
     end,
+
+    TableExpression = function(self)
+        self:try_consume(TokenTypes.SEPARATOR, '{')
+        local tbl = ''
+        repeat
+            tbl = tbl .. self:consume().value
+        until self:match(TokenTypes.SEPARATOR, '}')
+        self:try_consume(TokenTypes.SEPARATOR, '}')
+        return {
+            ['type'] = 'TableExpression',
+            ['value'] = tbl
+        }
+    end,
     IndexExpression = function(self)
         local ident = self:consume().value
         self:try_consume(TokenTypes.SEPARATOR, '[')
@@ -131,6 +144,9 @@ return {
     Prefix = function(self)
         if (self:match(TokenTypes.SEPARATOR, '(')) then
             return self:ParenthesizedExpression()
+        end
+        if (self:match(TokenTypes.SEPARATOR, '{')) then
+            return self:TableExpression()
         end
 
         if (self:match(TokenTypes.OPERATOR, '-')) then

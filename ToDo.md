@@ -17,8 +17,8 @@
 
 # Planned Features
 - [x] String Interpolation ("Hello, my name is ${name} and I am ${age} years old")
-- [ ] Lua Table Support
-    - [ ] Defining
+- [x] Lua Table Support
+    - [x] Defining
     - [x] Indexing
 - [ ] String Indexing: "Hello"[2] //-> 'e'
 - [ ] Default Parameters: fn example(arg = 5) { }

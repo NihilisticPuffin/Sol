@@ -32,6 +32,9 @@ return {
     visitParenthesizedExpression = function(self, node)
         return '(' .. self:visit(node.value) .. ')'
     end,
+    visitTableExpression = function(self, node)
+        return node.name .. '{' .. node.value .. '}'
+    end,
     visitIndexExpression = function(self, node)
         return node.name .. '[' .. self:visit(node.value) .. ']'
     end,
@@ -153,6 +156,8 @@ return {
             return self:visitUnaryExpression(node)
         elseif node.type == 'ParenthesizedExpression' then
             return self:visitParenthesizedExpression(node)
+        elseif node.type == 'TableExpression' then
+            return self:visitTableExpression(node)
         elseif node.type == 'IndexExpression' then
             return self:visitIndexExpression(node)
         else
