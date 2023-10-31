@@ -11,6 +11,7 @@ _G.__exp = function(l, r) return l^r end
 --START USER GENERATED CODE
 ]],
     depth = 0,
+    overload = false,
     ops = {
         ['+'] = '__add',
         ['-'] = '__sub',
@@ -70,7 +71,7 @@ _G.__exp = function(l, r) return l^r end
             return '(function() if ' .. self:visit(node.left) .. ' then return ' .. self:visit(node.right) .. ' end end)()'
         end
         if not self.ops[node.op] then return self:visit(node.left) .. ' ' .. node.op .. ' ' .. self:visit(node.right) end
-        return self.ops[node.op] .. '(' .. self:visit(node.left) .. ', ' .. self:visit(node.right) .. ')'
+        return (self.overload and '_G.' or '') .. self.ops[node.op] .. '(' .. self:visit(node.left) .. ', ' .. self:visit(node.right) .. ')'
     end,
     visitTernaryExpression = function(self, node)
         if node.left.op ~= '?' then error('Invalid Ternary', 2) end
@@ -87,11 +88,13 @@ _G.__exp = function(l, r) return l^r end
 
         local fn_out = ''
         self.depth = self.depth + 1
+        self. overload = true
         for _, node in ipairs(node.body) do
             fn_out = fn_out .. self:indent() .. self:visit(node) .. '\n'
         end
+        self. overload = false
         self.depth = self.depth - 1
-        return 'function _G.' .. self.ops[node.op] .. '(' .. fn_args .. ')\n' .. fn_out .. 'end'
+        return 'function ' .. self.ops[node.op] .. '(' .. fn_args .. ')\n' .. fn_out .. 'end'
     end,
 
     visitFunctionCall = function(self, fn)
