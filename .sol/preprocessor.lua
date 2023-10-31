@@ -1,6 +1,6 @@
 return {
     path = '',
-    data = ''
+    data = '',
     imports = function(self)
         for file in string.gmatch(self.data, '#import (%S*)') do
             file = file:sub(2, #file-1)
