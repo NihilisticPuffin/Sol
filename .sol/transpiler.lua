@@ -79,6 +79,7 @@ _G.__exp = function(l, r) return l^r end
     end,
 
     visitOperatorOverload = function(self, node)
+        if not self.ops[node.op] then error('Invalid operator overload ['.. node.op ..']', 2) end
         local fn_args = ''
         if (node.args) then
             for k, node in ipairs(node.args) do

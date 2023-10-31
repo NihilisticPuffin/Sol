@@ -50,7 +50,7 @@ return {
                     self.cursor = self.cursor+1
                 end
                 if (char == '/' and self:read() == '/') or (char == '#' and self:read() == '!') then
-                    while self:read() ~= '\n' do self.cursor = self.cursor+1 end
+                    while self:read() ~= '\n' and self.cursor <= #self.source do self.cursor = self.cursor+1 end
                 elseif (char == '/' and self:read() == '*') then
                     repeat self.cursor = self.cursor+1 until self:read(-2) == '*' and self:read(-1) == '/'
                 else
