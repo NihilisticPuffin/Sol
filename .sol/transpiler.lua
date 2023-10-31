@@ -91,7 +91,7 @@ _G.__exp = function(l, r) return l^r end
             fn_out = fn_out .. self:indent() .. self:visit(node) .. '\n'
         end
         self.depth = self.depth - 1
-        return 'function _G.' .. self.ops[node.op] .. '(' .. fn_args .. ')\n' .. fn_body .. 'end'
+        return 'function _G.' .. self.ops[node.op] .. '(' .. fn_args .. ')\n' .. fn_out .. 'end'
     end,
 
     visitFunctionCall = function(self, fn)
