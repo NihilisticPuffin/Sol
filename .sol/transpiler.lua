@@ -69,6 +69,7 @@ _G.__exp = function(l, r) return l^r end
         if node.op == '?' then
             return '(function() if ' .. self:visit(node.left) .. ' then return ' .. self:visit(node.right) .. ' end end)()'
         end
+        if not self.ops[node.op] then return self:visit(node.left) .. ' ' .. node.op .. ' ' .. self:visit(node.right) end
         return self.ops[node.op] .. '(' .. self:visit(node.left) .. ', ' .. self:visit(node.right) .. ')'
     end,
     visitTernaryExpression = function(self, node)
