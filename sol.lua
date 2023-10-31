@@ -28,7 +28,7 @@ function log(file, data)
     h.close()
 end
 
-local path = args.input:match(1, args.input:find('/[^/]*$'))
+local path = args.input:sub(1, args.input:find('/[^/]*$'))
 
 local h = fs.open(args.input, 'r')
 local raw_data = h.readAll()
