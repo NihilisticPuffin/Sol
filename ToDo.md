@@ -27,13 +27,4 @@
 - [ ] Enum
 - [ ] Switch Statements
 - [x] Ternary Operator (?:)
-
-# Possible Cursed? Features
-- [ ] Arithmetic String Operations
-    - Substring: 1-"Hello, World!"-8 //-> "ello"
-    - Concatenation: "Hello,"+" World!" //-> "Hello, World!"
-    - Repetition: "Hi"*4 //-> "HiHiHiHi"
-    - Spliting:
-        - "Hello, World!" / ',' //-> {"Hello", "World!"}
-        - "Hello, World!" / 4 //-> {"Hell", "o, W", "orld"}
-        - "Hello, World!" % 4 //-> '!'
+- [x] Operator Overloading

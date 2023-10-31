@@ -76,9 +76,9 @@ return {
     TableExpression = function(self)
         self:try_consume(TokenTypes.SEPARATOR, '{')
         local tbl = ''
-        repeat
+        while not self:match(TokenTypes.SEPARATOR, '}') do
             tbl = tbl .. self:consume().value
-        until self:match(TokenTypes.SEPARATOR, '}')
+        end
         self:try_consume(TokenTypes.SEPARATOR, '}')
         return {
             ['type'] = 'TableExpression',
