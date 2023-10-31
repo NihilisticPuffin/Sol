@@ -1,7 +1,5 @@
 # TODO LIST
 - [ ] Better Error Handling / Messages
-- [ ] More Compiler Features (compile whole directory)
-- [ ] Unicode Character Support
 
 ## Compiler Components
 - [x] Tokenizer
@@ -24,6 +22,7 @@
 - [x] Default Parameters: fn example(arg = 5) { }
 
 # Possible Features
+- [ ] Unicode Character Support
 - [ ] Const
 - [ ] Enum
 - [ ] Switch Statements
