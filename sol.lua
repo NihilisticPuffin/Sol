@@ -28,11 +28,13 @@ function log(file, data)
     h.close()
 end
 
+local path = args.input:match(1, args.input:find('/[^/]*$'))
+
 local h = fs.open(args.input, 'r')
 local raw_data = h.readAll()
 h.close()
 
-local data = Preprocessor:process(raw_data)
+local data = Preprocessor:process(raw_data, path)
 
 local tokens = Lexer:lex(data)
 if args.log then log('tokens.log', tokens) end
