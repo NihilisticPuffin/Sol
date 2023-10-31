@@ -404,7 +404,7 @@ return {
             }
         elseif (self:match(TokenTypes.IDENTIFIER) and self:match(TokenTypes.SEPARATOR, '(', 1)) then
             return self:FunctionCall()
-        elseif (self:match(TokenTypes.IDENTIFIER) and self:match(TokenTypes.OPERATOR, '=', 1)) then
+        elseif (self:match(TokenTypes.IDENTIFIER) then
             return self:VariableDeclaration()
         elseif (self:match(TokenTypes.SEPARATOR, '{')) then
             self:try_consume(TokenTypes.SEPARATOR, '{')
