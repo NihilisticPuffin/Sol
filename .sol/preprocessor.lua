@@ -12,14 +12,17 @@ return {
     end,
 
     defines = function(self)
-        -- TODO: #define
+        for k, v in string.gmatch(self.data, '#define (.-) ([^\n]*)') do
+            self.data = self.data:gsub('(#define (.-) ([^\n]*))\n', '')
+            self.data = self.data:gsub(k, v:sub(2, #v-1))
+        end
     end,
 
     process = function(self, data, path)
         self.path = path
         self.data = data
         self:imports()
-        -- self:defines()
+        self:defines()
         return self.data
     end,
 }

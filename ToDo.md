@@ -13,18 +13,20 @@
 - [x] sol.lua Rewrite
 
 # Preprocessor
-- [ ] Define directive (#define \<name> \<value>)
+- [x] Define directive (#define \<name> \<value>)
 - [x] Import directive (#import \<file>)
 
 # Planned Features
+- [ ] for loops
+- [ ] elseif and else statements
 - [x] String Interpolation ("Hello, my name is ${name} and I am ${age} years old")
 - [x] Lua Table Support
-- [ ] String Indexing: "Hello"[2] //-> 'e'
 - [x] Default Parameters: fn example(arg = 5) { }
 
 # Possible Features
 - [ ] Const
 - [ ] Enum
 - [ ] Switch Statements
+- [ ] String Indexing: "Hello"[2] //-> 'e'
 - [x] Ternary Operator (?:)
 - [x] Operator Overloading
