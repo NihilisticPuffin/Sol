@@ -1,35 +1,3 @@
---[[
-        ===== Node Types =====
-        ----------------------
-        | Key:               |
-        |  [*] - Finished    |
-        |  [-] - In Progress |
-        |  [ ] - Not Started |
-        ----------------------
-        [*] LocalDeclaration: value
-        [*] VariableDeclaration: name, value
-        [*] FunctionDeclaration: name, args, body
-        [ ] ClassDeclaration: name, parent, body
-
-        [*] FunctionCall: name, args
-        [ ] MemberExpression: name, expr
-
-        [-] IfStatement: expr, body
-        [ ] ElseIfStatement: expr, body
-        [ ] ElseStatement: body
-
-        [*] WhileStatement: expr, body
-        [ ] ForStatement: init, limit, step, body
-
-        [*] ReturnStatement: value
-
-        [*] BinaryExpression: op, left, right
-        [-] UnaryExpression: op, value
-        [*] ParenthesizedExpression: value
-
-        [*] Literal: value
-
---]]
 return {
     tokens = {},
     cursor = 1,
@@ -224,7 +192,7 @@ return {
         local vars = {}
         local defaults = {}
         if (not self:match(TokenTypes.IDENTIFIER)) then
-            return nil
+            return {}, {}
         end
         table.insert(vars, self:try_consume(TokenTypes.IDENTIFIER))
         if self:match(TokenTypes.OPERATOR, '=') then
@@ -434,7 +402,7 @@ return {
 
     StatementList = function(self)
         local stmts = {}
-        while (self:peek() ~= nil and self:peek().value ~= '}') do
+        while (self:peek() ~= nil and self:peek().value ~= '}' and not self:match(TokenTypes.EOF)) do
             table.insert(stmts, self:Statement())
         end
         return stmts

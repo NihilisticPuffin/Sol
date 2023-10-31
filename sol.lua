@@ -4,6 +4,7 @@ local args = dofile("./.sol/argser")(...)
   :named('log')
   :parse().args
 
+local Preprocessor = dofile('./.sol/preprocessor.lua')
 local Lexer = dofile('./.sol/tokenizer.lua')
 local Parser = dofile('./.sol/parser.lua')
 local Compiler = dofile('./.sol/transpiler.lua')
@@ -28,8 +29,10 @@ function log(file, data)
 end
 
 local h = fs.open(args.input, 'r')
-local data = h.readAll()
+local raw_data = h.readAll()
 h.close()
+
+local data = Preprocessor:process(raw_data)
 
 local tokens = Lexer:lex(data)
 if args.log then log('tokens.log', tokens) end

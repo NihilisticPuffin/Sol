@@ -4,6 +4,7 @@ TokenTypes = {
     ['SEPARATOR'] = 'SEPARATOR',
     ['OPERATOR'] = 'OPERATOR',
     ['LITERAL'] = 'LITERAL',
+    ['EOF'] = 'EOF',
 }
 
 local KEYWORDS = {
@@ -93,7 +94,7 @@ return {
                 error('['.. self.line ..'] Unexpected Token: ' .. char, 0)
             end
         end
-
+        self:addToken(TokenTypes.EOF)
         return self.tokens
     end
 }

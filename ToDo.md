@@ -14,6 +14,7 @@
 
 # Preprocessor
 - [ ] Define directive (#define \<name> \<value>)
+- [x] Import directive (#import \<file>)
 
 # Planned Features
 - [x] String Interpolation ("Hello, my name is ${name} and I am ${age} years old")
