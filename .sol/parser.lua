@@ -283,6 +283,24 @@ return {
         }
     end,
 
+    OperatorOverload = function(self)
+        self:consume()
+        local op = self:try_consume(TokenTypes.OPERATOR)
+        self:try_consume(TokenTypes.SEPARATOR, '(')
+        local args, defs = self:VarList()
+        self:try_consume(TokenTypes.SEPARATOR, ')')
+        self:try_consume(TokenTypes.SEPARATOR, '{')
+        local body = self:StatementList()
+        self:try_consume(TokenTypes.SEPARATOR, '}')
+
+        return {
+            ['type'] = 'OperatorOverload',
+            ['op'] = op,
+            ['args'] = args,
+            ['body'] = body
+        }
+    end,
+
     FunctionDeclaration = function(self)
         self:consume()
         local ident = self:try_consume(TokenTypes.IDENTIFIER).value
@@ -350,6 +368,8 @@ return {
                 }
             end
         -- elseif (self:match(TokenTypes.KEYWORD, 'class')) then
+        elseif (self:match(TokenTypes.KEYWORD, 'operator')) then
+            return self:OperatorOverload()
         elseif (self:match(TokenTypes.KEYWORD, 'fn')) then
             return self:FunctionDeclaration()
         elseif (self:match(TokenTypes.KEYWORD, 'if')) then

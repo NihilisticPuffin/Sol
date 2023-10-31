@@ -13,6 +13,7 @@ local KEYWORDS = {
     ['while'] = true,
     ['for'] = true,
     ['fn'] = true,
+    ['operator'] = true,
     ['class'] = true,
     ['local'] = true,
     ['return'] = true,

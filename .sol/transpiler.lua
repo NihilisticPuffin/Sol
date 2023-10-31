@@ -1,7 +1,24 @@
 return {
     ast = {},
-    output = '__ARGS = {...}\n',
+    output = [[__ARGS = {...}
+_G.__add = function(l, r) return l+r end
+_G.__sub = function(l, r) return l-r end
+_G.__mul = function(l, r) return l*r end
+_G.__div = function(l, r) return l/r end
+_G.__mod = function(l, r) return l%r end
+_G.__exp = function(l, r) return l^r end
+
+--START USER GENERATED CODE
+]],
     depth = 0,
+    ops = {
+        ['+'] = '__add',
+        ['-'] = '__sub',
+        ['*'] = '__mul',
+        ['/'] = '__div',
+        ['%'] = '__mod',
+        ['^'] = '__exp',
+    },
 
     indent = function(self)
         local tabs = ''
@@ -30,7 +47,7 @@ return {
     end,
 
     visitParenthesizedExpression = function(self, node)
-        return '(' .. self:visit(node.value) .. ')'
+        return self:visit(node.value)
     end,
     visitTableExpression = function(self, node)
         return '{' .. node.value .. '}'
@@ -57,6 +74,23 @@ return {
     visitTernaryExpression = function(self, node)
         if node.left.op ~= '?' then error('Invalid Ternary', 2) end
         return '(function() if ' .. self:visit(node.left.left) .. ' then return ' .. self:visit(node.left.right) .. ' else return ' .. self:visit(node.right) .. ' end end)()'
+    end,
+
+    visitOperatorOverload = function(self, node)
+        local fn_args = ''
+        if (fn.args) then
+            for k, node in ipairs(fn.args) do
+                fn_args = fn_args .. ((k > 1) and ', ' or '') .. node.value
+            end
+        end
+
+        local fn_out = ''
+        self.depth = self.depth + 1
+        for _, node in ipairs(fn.body) do
+            fn_out = fn_out .. self:indent() .. self:visit(node) .. '\n'
+        end
+        self.depth = self.depth - 1
+        return 'function _G.' .. ops[node.op] .. '(' .. fn_args .. ')\n' .. fn_body .. 'end'
     end,
 
     visitFunctionCall = function(self, fn)
@@ -142,6 +176,8 @@ return {
             return 'local ' .. self:visit(node.value)
         elseif node.type == 'VariableDeclaration' then
             return self:visitVariableDeclaration(node)
+        elseif node.type == 'OperatorOverload' then
+            return self:visitOperatorOverload(node)
         elseif node.type == 'FunctionDeclaration' then
             return self:visitFunctionDeclaration(node)
         elseif node.type == 'AnonFunctionDeclaration' then
