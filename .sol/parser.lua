@@ -285,7 +285,7 @@ return {
 
     OperatorOverload = function(self)
         self:consume()
-        local op = self:try_consume(TokenTypes.OPERATOR)
+        local op = self:try_consume(TokenTypes.OPERATOR).value
         self:try_consume(TokenTypes.SEPARATOR, '(')
         local args, defs = self:VarList()
         self:try_consume(TokenTypes.SEPARATOR, ')')

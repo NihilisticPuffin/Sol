@@ -69,7 +69,7 @@ _G.__exp = function(l, r) return l^r end
         if node.op == '?' then
             return '(function() if ' .. self:visit(node.left) .. ' then return ' .. self:visit(node.right) .. ' end end)()'
         end
-        return self:visit(node.left) .. ' ' .. node.op .. ' ' .. self:visit(node.right)
+        return self.ops[node.op] .. '(' .. self:visit(node.left) .. ', ' .. self:visit(node.right) .. ')'
     end,
     visitTernaryExpression = function(self, node)
         if node.left.op ~= '?' then error('Invalid Ternary', 2) end
