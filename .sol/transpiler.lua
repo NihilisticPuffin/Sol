@@ -78,15 +78,15 @@ _G.__exp = function(l, r) return l^r end
 
     visitOperatorOverload = function(self, node)
         local fn_args = ''
-        if (fn.args) then
-            for k, node in ipairs(fn.args) do
+        if (node.args) then
+            for k, node in ipairs(node.args) do
                 fn_args = fn_args .. ((k > 1) and ', ' or '') .. node.value
             end
         end
 
         local fn_out = ''
         self.depth = self.depth + 1
-        for _, node in ipairs(fn.body) do
+        for _, node in ipairs(node.body) do
             fn_out = fn_out .. self:indent() .. self:visit(node) .. '\n'
         end
         self.depth = self.depth - 1
